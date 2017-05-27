@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+
+    {% load staticfiles %}
+    <!-- jQuery -->
+  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  	<!-- Bootstrap js -->
+  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  	<!-- Google Charts js -->
+  	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <!---->
+    <script type="text/javascript" src="{% static 'js/image_load.js' %}"></script>
+  	<!-- Bootstrap CSS -->
+  	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
+  	<!-- Our own CSS -->
+  	<link rel="stylesheet" type="text/css" href="{% static 'css/base_sidebar.css' %}">
+    <link rel="shortcut icon" type="image/png" href="{% static 'image/favicon.ico' %}"/>
+
+    {% block js %}
+    {% endblock %}
+    {% block css %}
+    {% endblock %}
+
+    <title>CMU Coursebook</title>
+</head>
+
+<body onload="makeProfileCircleImage('profile')">
+
+  <div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-2 sidebar">
+				<a href="{% url 'profile' user.username %}" class="name">
+          <h2 id="name">{{user.first_name}} {{user.last_name}}</h2>
+        </a>
+        <div class="profile-img">
+          <a href="{% url 'profile' user.username %}">
+            <img src="{% url 'get-image' user.username %}"
+                 alt="{{user.username}}'s profile img" onerror="this.style.display='none'" />
+          </a>
+        </div>
+        <hr>
+
+				<form method="post" action="{% url 'search' %}">
+            <input name="cid" type="text" class="form-control" placeholder="Search (i.e. 15112)"><br>
+            <input class="btn btn-sm btn-success" type="submit" value="Search"><hr>
+            {% csrf_token %}
+				</form>
+
+				<ul class="nav nav-sidebar">
+					<li class="sidebar_item"><a href="{% url 'home' %}">Dashboard</a></li>
+          <li class="sidebar_item"><a href="{% url 'profile' user.username %}">Profile</a></li>
+					<li class="sidebar_item"><a href="{% url 'friends' %}">Friends{% block pending %}{% endblock %}</a></li>
+					<li class="sidebar_item"><a href="{% url 'browse' %}">Browse</a></li>
+				</ul>
+				<br><br>
+				<form action="{% url 'logout' %}">
+					<input class="btn btn-primary logout" type="submit" value="Logout">
+				</form>
+			</div>
+			<div class="col-sm-10 col-sm-push-2 main">
+				{% block content %}
+        {% endblock %}
+			</div>
+		</div>
+	</div>
+</body>
+
+<!-- <script type="text/javascript">
+    $(function() {
+        var obj = $('.profile-img img');
+        var width = obj.width();
+        var height = obj.height();
+        if (width < height) {
+          obj.css('width', '100%');
+          obj.css('height', 'auto');
+        } else {
+          obj.css('width', 'auto');
+          obj.css('height', '100%');
+          obj.css('margin-left', '-20px');
+        }
+    });
+</script> -->
+
+</html>

@@ -1,0 +1,154 @@
+{% extends "base_sidebar.html" %}
+
+{% block js %}
+{% endblock %}
+
+{% block css %}
+{% load staticfiles %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/friends.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/browse.css' %}">
+{% endblock %}
+
+{% block content %}
+<h1>Browse Courses</h1>
+
+<div class="row">
+    <hr>
+    <h2><small>&nbsp;&nbsp;&nbsp;Filter by Department </small></h2>
+    <div class="col-sm-2">
+        <div class="btn-group" id="department">
+            <button type="button" class="btn btn-info">Department</button>
+            <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="caret"></span>
+                <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <ul class="dropdown-menu">
+                {% for dept in dept_list %}
+                    <li><a href="{% url 'browse' %}?department={{dept}}">{{dept}}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="list-group">
+            {% for course in courses %}
+                <a href="{% url 'search2' %}?cid={{course.cid}}" class="list-group-item"><strong>{{course.cid}}</strong> {{course.name}}</a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+<hr>
+    <h2><small>&nbsp;&nbsp;&nbsp; Top 5 Courses </small></h2>
+    <div class="col-sm-2">
+        <div class="btn-group" id="rankby">
+            <button type="button" class="btn btn-info">Rank by</button>
+            <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="caret"></span>
+                <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <ul class="dropdown-menu">
+                {% for ob in rankby %}
+                    <li><a href="{% url 'browse' %}?orderby={{ob}}&dept={{dept}}">{{ob}}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="list-group">
+            {% for course in top5course %}
+                <a href="{% url 'search2' %}?cid={{course.cid}}" class="list-group-item"><strong>{{course.cid}}</strong> {{course.name}}</a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<br>
+<h1>Browse Users</h1>
+
+<div class="row">
+<hr>
+<div class="col-sm-5">
+    <form method="get" action="{% url 'search-users' %}" class="form-inline">
+        <div class="input-group">
+            <input id="key" name="key" type="text" class="form-control" placeholder="Search users" required>
+            <span class="input-group-btn semester-select">
+                <select class="form-control" id="tag" name="tag">
+                    <option>username</option>
+                    <option>firstname</option>
+                    <option>lastname</option>
+                    <option>email</option>
+                </select>
+            </span>
+            <span class="input-group-btn">
+                <button class="btn btn-info" type="submit">Search</button>
+            </span>
+        </div>
+    </form>
+
+</div>
+</div>
+<br>
+
+<div class="row">
+<div class="col-sm-8">
+    {% if user_list %}
+        <div class="list-group">
+            {% for user_en in user_list %}
+                <div class="friend-tab">
+                    <div class="friend-img">
+                        <img src="{% url 'get-image' user_en.username %}"
+                             alt="user_en.username" onerror="this.style.display='none'" />
+                        <br><br>
+                        <div class="buttons">
+                            <a href="{% url 'profile' username=user_en.username %}" type="button"
+                               class="btn btn-primary profile">View Profile</a>
+                        </div>
+                    </div>
+                    <div class="friend-text">
+                        <a href="{% url 'profile' user_en.username%}"><h3 class="friend-name">{{user_en.first_name}} {{user_en.last_name}}</h3></a>
+                        <h4 class="friend-email"><small>{{ user_en.email }}</small></h4>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <h3> {{ msg }}</h3>
+    {% endif %}
+</div>
+</div>
+
+<script type="text/javascript">
+    $(function() {
+        setSquareImg();
+        function setSquareImg() {
+          var div = $('.friend-img');
+          var width = div.width();
+          div.css('height', width);
+          div.css('overflow', 'hidden');
+          div.css('border-radius', '50%');
+          div.css('border', '5px solid #bb0000');
+        }
+        $('.friend-img img').each(function(i, obj) {
+          var width = $(this).width();
+          var height = $(this).height();
+          if (width < height) {
+            $(this).css('width', '100%');
+            $(this).css('height', 'auto');
+          } else {
+            $(this).css('width', 'auto');
+            $(this).css('height', '100%');
+            $(this).css('margin-left', '-50px');
+          }
+        });
+    });
+</script>
+{% endblock %}
+
+{% block pending %}
+{% if pending > 0 %}
+<span class="badge">{{pending}}</span>
+{% endif %}
+{% endblock %}

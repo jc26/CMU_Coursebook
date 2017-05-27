@@ -1,0 +1,5 @@
+select#tag.form-control {
+  margin-left: -4px;
+  margin-right: -2px;
+  z-index: 1;
+}

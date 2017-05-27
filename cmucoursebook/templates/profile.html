@@ -1,0 +1,302 @@
+{% extends "base_sidebar.html" %}
+
+{% block css %}
+{% load staticfiles %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/profile.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<h1>Profile</h1>
+<hr>
+<div class="container-fluid">
+    <!-- Some HTML & CSS taken from http://bootsnipp.com/snippets/featured/user-profile-widget -->
+    <div class="row">
+    <div class="well well-sm">
+        <div class="row">
+            <div class="col-sm-4 col-md-4 user-img">
+                <div class="profile_image">
+                    <img src="{% url 'get-image' cuser.username %}" alt="{{cuser.username}}"
+                         class="img-rounded img-responsive" onerror="this.style.display='none'"/><br>
+                </div>
+                {% if cuser.username == user.username %}
+                    <button type="button" class="btn btn-primary edit-image" data-toggle="modal" data-target="#editImage">
+                        <span class="glyphicon glyphicon-pencil"></span>
+                    </button>
+                {% endif %}
+            </div>
+            <div class="col-sm-8 col-md-8 info">
+                <h4>{{cuser.first_name}} {{cuser.last_name}}</h4>
+                <small>
+                    <cite>
+                      {% if profile.from_city and profile.from_country %}
+                        {{profile.from_city}}, {{profile.from_country}}
+                      {% else %}
+                        N/A
+                      {% endif %}
+                        <i class="glyphicon glyphicon-map-marker"></i>
+                    </cite>
+                </small>
+                <p>
+                    <i class="glyphicon glyphicon-envelope"></i><b>Email</b> {{cuser.email}}
+                    <br />
+                    <i class="glyphicon glyphicon-education"></i><b>Major</b>
+                    {% if profile.major %}
+                      {{profile.major}}
+                    {% else %}
+                      N/A
+                    {% endif %}
+                    <br />
+                    <i class="glyphicon glyphicon-apple"></i><b>Year</b>
+                    {% if profile.year %}
+                      {{profile.get_year_display}}
+                    {% else %}
+                      N/A
+                    {% endif %}
+                    <br />
+                    <i class="glyphicon glyphicon-leaf"></i><b>Age</b>
+                    {% if profile.age %}
+                      {{profile.age}}
+                    {% else %}
+                      N/A
+                    {% endif %}
+                    <br />
+                    <i class="glyphicon glyphicon-align-left"></i><b>Bio</b>
+                    <div id="bio">
+                        {% if profile.bio %}
+                          {{profile.bio}}
+                        {% else %}
+                          N/A
+                        {% endif %}
+                    </div>
+                </p>
+                {% if cuser.username == user.username %}
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editProfile">
+                    Edit Profile</button>
+                {% endif %}
+            </div>
+        </div>
+        </div>
+        <br>
+
+        {% if cuser != user %}
+            {% if isFriend %}
+                <a href="{% url 'remove-friend' username=cuser.username %}" type="button" class="btn btn-danger profile">Remove Friend</a>
+            {% elif isPending is False and theyIsPending is False %}
+                <a href="{% url 'request-friendship' username=cuser.username %}" type="button" class="btn btn-primary profile">Add Friend</a>
+            {% endif %}
+        {% endif %}
+        <hr>
+
+        {% if cuser == user or isFriend%}
+        <div class="row">
+        <div class="col-sm-6">
+
+        <div class="panel-group" id="accordion">
+            <div class="panel panel-default">
+                <div class="panel-heading" id="headingCurr">
+                    <h3 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#curr">
+                            Current courses</a>
+                    </h3>
+                </div>
+                <div class="panel-collapse collapse in" id="curr">
+                    <div class="panel-body">
+                       <ul class="list-group">
+                            {% for course in courses_curr %}
+                                <li class="list-group-item course-container">
+                                    <a href="{% url 'search2' %}?cid={{course.cid}}">
+                                        <strong>{{course.cid}}</strong> {{course.name}}
+                                    </a>
+                                    {% if cuser.username == user.username %}
+                                        <form action="{% url 'delete-course' %}" method="post">
+                                            <input type="hidden" name="cid" value="{{course.cid}}">
+                                            <input type="hidden" name="page" value="profile">
+                                            <input type="hidden" name="semester" value="curr">
+                                            <input class="btn btn-danger btn-xs" type="submit" value="Remove Course">
+                                            {% csrf_token %}
+                                        </form>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+           <div class="panel panel-default">
+                <div class="panel-heading" id="headingPast">
+                    <h3 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#past">
+                            Past courses</a>
+                    </h3>
+                </div>
+                <div class="panel-collapse collapse in" id="past">
+                    <div class="panel-body">
+                       <ul class="list-group">
+                            {% for course in courses_past %}
+                                <li class="list-group-item course-container">
+                                    <a href="{% url 'search2' %}?cid={{course.cid}}">
+                                        <strong>{{course.cid}}</strong> {{course.name}}
+                                    </a>
+                                    {% if cuser.username == user.username %}
+                                        <form action="{% url 'delete-course' %}" method="post">
+                                            <input type="hidden" name="cid" value="{{course.cid}}">
+                                            <input type="hidden" name="page" value="profile">
+                                            <input type="hidden" name="semester" value="past">
+                                            <input class="btn btn-danger btn-xs" type="submit" value="Remove Course">
+                                            {% csrf_token %}
+                                        </form>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading" id="headingPlan">
+                    <h3 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#plan">
+                            Future courses</a>
+                    </h3>
+                </div>
+                <div class="panel-collapse collapse in" id="plan">
+                    <div class="panel-body">
+                       <ul class="list-group">
+                            {% for course in courses_plan %}
+                                <li class="list-group-item course-container">
+                                    <a href="{% url 'search2' %}?cid={{course.cid}}">
+                                        <strong>{{course.cid}}</strong> {{course.name}}
+                                    </a>
+                                    {% if cuser.username == user.username %}
+                                        <form action="{% url 'delete-course' %}" method="post">
+                                            <input type="hidden" name="cid" value="{{course.cid}}">
+                                            <input type="hidden" name="page" value="profile">
+                                            <input type="hidden" name="semester" value="plan">
+                                            <input class="btn btn-danger btn-xs" type="submit" value="Remove Course">
+                                            {% csrf_token %}
+                                        </form>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+
+        <div class="col-sm-6">
+            <div class="panel panel-default">
+                <div class="panel-heading" id="headingLike">
+                    <h3 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#like">
+                            Liked Courses</a>
+                    </h3>
+                </div>
+                <div class="panel-collapse collapse in" id="like">
+                    <div class="panel-body">
+                       <ul class="list-group">
+                            {% for course in courses_like %}
+                                <li class="list-group-item course-container">
+                                    <a href="{% url 'search2' %}?cid={{course.cid}}">
+                                        <strong>{{course.cid}}</strong> {{course.name}}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="editProfile" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Edit Profile</h4>
+            </div>
+            <form enctype="multipart/form-data" class="form-horizontal" method="post" action="{% url 'edit-profile'%}">
+                <div class="modal-body">
+                    <table>
+                        <label for="first_name"> First name:</label>
+                        <input name="first_name" type="text" class="form-control" value="{{ user.first_name }}" required><br>
+                        <label for="last_name"> Last name:</label>
+                        <input name="last_name" type="text" class="form-control" value="{{ user.last_name }}" required><br>
+
+                        <label for="from_city"> From City:</label>
+                        <input name="from_city" type="text" class="form-control" value="{{ profile.from_city }}"><br>
+                        <label for="from_country"> From Country:</label>
+                        <input name="from_country" type="text" class="form-control" value="{{ profile.from_city }}"><br>
+                        <label for="major"> Major:</label>
+                        <input name="major" type="text" class="form-control" value="{{ profile.major }}"><br>
+
+                        <label for="year"> Year:</label><br>
+                        <select id="year" name="year">
+                        <option value="FR">Freshman</option>
+                        <option value="SO">Sophomore</option>
+                        <option value="JR">Junior</option>
+                        <option value="SR">Senior</option>
+                        <option value="GR">Graduate</option>
+                        </select>
+                        <br><br>
+
+                        <label for="age"> Age:</label>
+                        <input name="age" type="number" class="form-control" min="1" max="199" value="{{ profile.age }}"><br>
+                        <label for="bio"> Short Biography：</label>
+                        <textarea name ="bio" class="form-control" rows="4" cols="50">{{ profile.bio }}</textarea>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-info">Confirm</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+                {% csrf_token %}
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="editImage" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Change Image</h4>
+            </div>
+            <form enctype="multipart/form-data" class="form-horizontal" method="post" action="{% url 'edit-image'%}">
+                <div class="modal-body">
+                    <table>
+                        {{ formimage }}
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-info">Confirm</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+                {% csrf_token %}
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block pending %}
+{% if pending > 0 %}
+<span class="badge">{{pending}}</span>
+{% endif %}
+{% endblock %}

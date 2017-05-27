@@ -1,0 +1,171 @@
+{% extends "base_sidebar.html" %}
+
+{% block js %}
+{% load staticfiles %}
+<script type="text/javascript" src="{% static 'js/course_detail.js' %}"></script>
+{% endblock %}
+
+{% block css %}
+{% load staticfiles %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/course_detail.css' %}">
+{% endblock %}
+
+{% block content %}
+<h1>{{course.cid}}: {{course.name}}</h1>
+<p id="course_id" hidden>{{course.cid}}</p>
+<div class="well well-sm">
+	<h3>Department: {{course.department}}</h3>
+	<h3>Description: </h3>
+	{{course.description}}
+</div>
+<div class="row">
+    <div class="col-sm-3">
+	{% if added %}
+	<form action="{% url 'delete-course' %}" method="post">
+		<input type="hidden" name="cid" value="{{course.cid}}">
+		<input type="hidden" name="page" value="course-detail">
+		<input type="hidden" name="semester" value="curr">
+		<input class="btn btn-danger" type="submit" value="Remove Course" style="margin-top:-10px;">
+		{% csrf_token %}
+	</form>
+	{% else %}
+	<a href="{% url 'add-class' cid=course.cid %}" id="add-class" type="button" class="btn btn-success" style="margin-left: -1px;">Add Class!</a>
+	{% endif %}
+    </div>
+
+    <div class="col-sm-2 col-sm-offset-7" align="right">
+    {% if liked %}
+        <button type="button" id="like-class" class="btn btn-xs disabled">
+        <span class="glyphicon glyphicon-thumbs-up"> Liked {{ course.likes }}</span></button>
+    {% else %}
+        <a href="{% url 'like-class' cid=course.cid %}">
+            <button type="button" id="like-class" class="btn btn-primary btn-xs">
+        <span class="glyphicon glyphicon-thumbs-up"> Like {{ course.likes }}</span></button></a>
+    {% endif %}
+    </div>
+
+</div>
+<hr>
+
+<div class="row">
+    <div class="col-sm-12">
+        <ul class="nav nav-tabs">
+            <li role="presentation" id="rt"><a href="#" id="rating-tab">Rating</a></li>
+            <li role="presentation" id="ht"><a href="#" id="hours-tab">Hours Spent</a></li>
+            <li role="presentation" id="dt"><a href="#" id="difficulty-tab">Difficulty</a></li>
+        </ul>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12">
+        <div id="lineChart"></div>
+    </div>
+</div>
+
+<h3>Comments</h3>
+
+<div>
+    {% if my_comment %}
+        <button type="button" class="btn btn-sm btn-primary" data-toggle="collapse" data-target="#edit-comment">
+            Modify My Comment</button>
+    {% else %}
+        <button type="button" class="btn btn-sm btn-info" data-toggle="collapse" data-target="#edit-comment">
+            Add New Comment</button>
+    {% endif %}
+</div>
+
+<div id="edit-comment" class="collapse">
+<div class="well well-lg">
+    <form enctype="multipart/form-data" class="form-horizontal" method="post" action="{% url 'add-comment' course.cid%}">
+        {% if my_comment %}
+            <label for="difficulty"> Difficulty:</label>
+            <input type="radio" name="difficulty" value="1"> Easy
+            <input type="radio" name="difficulty" value="2" checked> Medium
+            <input type="radio" name="difficulty" value="3"> Hard
+            <br>
+            <label for="skills"> Skills: [Use comma to separate different skills]</label>
+            <input name="skills" type="text" class="form-control" value="{{ my_comment.skills }}" required><br>
+            <label for="comment"> Comment Content：</label>
+            <textarea name ="comment" class="form-control" rows="4" cols="50" required>{{ my_comment.comment }}</textarea>
+        {% else %}
+            <label for="difficulty"> Difficulty:</label>
+            <input type="radio" name="difficulty" value="1"> Easy
+            <input type="radio" name="difficulty" value="2" checked> Medium
+            <input type="radio" name="difficulty" value="3"> Hard
+            <br>
+            <label for="skills"> Skills: [Use comma to separate different skills]</label>
+            <input name="skills" type="text" class="form-control" placeholder="C++, Java..." required><br>
+            <label for="comment"> Comment Content：</label>
+            <textarea name ="comment" class="form-control" rows="4" cols="50"
+                      placeholder="This course is my favorate, the course is mainly about..." required></textarea>
+        {% endif %}
+        <button type="submit" class="btn btn-xs btn-info submit-comment">Submit</button>
+        {% csrf_token %}
+    </form>
+</div>
+</div>
+
+<br>
+<div id="comment-section">
+    {% if comments %}
+        {% for comment in comments %}
+	          <div class="panel panel-default">
+                <div class="panel-heading">
+										<span class="comment-img">
+											<a href="{% url 'profile' comment.user.username %}">
+												<img src="{% url 'get-image' comment.user.username %}" alt="{{cuser.username}}" align="left" onerror="this.style.display='none'"/>
+											</a>
+										</span>
+				            <span align="left">
+				                <a href="{% url 'profile' comment.user.username %}" class="comment-name">
+				                    &nbsp;{{ comment.user.first_name }} {{ comment.user.last_name }}
+				                </a>
+				            </span>
+										<span class="comment-time"><small>{{ comment.timestamp }} </small></span>
+                </div>
+			          <div class="panel-body">
+									{{ comment.comment }}
+									<br />
+									<br />
+				          <input type="hidden" name="#" value="{{comment.skills}}" class="skill-string">
+								</div>
+	          </div>
+        {% endfor %}
+    {% else %}
+        <h3><mark> No comment yet, please add your comment! ~.~</mark></h3>
+    {% endif %}
+</div>
+
+<script type="text/javascript">
+    $(function() {
+        setSquareImg();
+        function setSquareImg() {
+          var div = $('.friend-img');
+          var width = div.width();
+          div.css('height', width);
+          div.css('overflow', 'hidden');
+          div.css('border-radius', '50%');
+          div.css('border', '5px solid #bb0000');
+        }
+				$('.comment-img img').each(function(i, obj) {
+					var width = $(this).width();
+					var height = $(this).height();
+					if (width < height) {
+						$(this).css('width', '100%');
+						$(this).css('height', 'auto');
+					} else {
+						$(this).css('width', 'auto');
+						$(this).css('height', '100%');
+						$(this).css('margin-left', '-10px');
+					}
+				});
+    });
+</script>
+{% endblock %}
+
+{% block pending %}
+{% if pending > 0 %}
+<span class="badge">{{pending}}</span>
+{% endif %}
+{% endblock %}

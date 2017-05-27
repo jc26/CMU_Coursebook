@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    {% load staticfiles %}
+    {% block js %}
+    {% endblock %}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
+    <!-- Some code taken from http://azmind.com/bootstrap-login-register-forms-templates/ -->
+    <link href="{% static 'css/form_elements.css' %}" rel="stylesheet" type="text/css">
+    <!-- Some code taken from http://azmind.com/bootstrap-login-register-forms-templates/ -->
+    <link href="{% static 'css/bootstrap_login.css' %}" rel="stylesheet" type="text/css">
+    <!----->
+    <link href="{% static 'css/login_base.css' %}" rel="stylesheet" type="text/css">
+    <link rel="shortcut icon" type="image/png" href="{% static 'image/favicon.ico' %}"/>
+    <script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <title>CMU Coursebook</title>
+</head>
+
+<body>
+    <div class="inner-bg">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-8 col-sm-offset-2 text">
+                    <h1><strong>CMU</strong> CourseBook</h1>
+                    <div class="description">
+                        <p>
+
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
+
+    <footer>
+    	<div class="container">
+    		<div class="row">
+
+    			<div class="col-sm-8 col-sm-offset-2">
+    				<div class="footer-border"></div>
+    				<p>Developed by Zhouchenye Peng, Runsha Long, and Jason Chang for the 15-437 term project. <i class="fa fa-smile-o"></i></p>
+    			</div>
+
+    		</div>
+    	</div>
+    </footer>
+</body>
+{% block loader %}
+{% endblock %}
+</html>

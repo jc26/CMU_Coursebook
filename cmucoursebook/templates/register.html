@@ -1,0 +1,42 @@
+{% extends "login_base.html" %}
+
+{% load addcss %}
+
+{% block content %}
+
+<!-- Some code taken from http://azmind.com/bootstrap-login-register-forms-templates/ -->
+<div class="form-box">
+    <div class="form-top">
+        <div class="form-top-left">
+            <h3>Sign up now</h3>
+            <p>Fill in the form below to get instant access:</p>
+        </div>
+        <div class="form-top-right">
+            <i class="fa fa-pencil"></i>
+        </div>
+    </div>
+    <div class="form-bottom">
+        <form action="{% url 'register' %}" method="post" class="registration-form">
+            {% for field in form.visible_fields %}
+                <div class="form-group">
+                    <label class="sr-only">{{ field.label }}</label>
+                    {{ field|addcss:"form-control" }}
+                    <span style="color:red">
+                        {% for error in field.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </span>
+                </div>
+            {% endfor %}
+            <span style="color:red">
+            {% for field in form.hidden_fields %}
+                {{field}} {{field.errors}}
+            {% endfor %}
+            </span>
+            <button type="submit" class="btn">Register</button>
+            {% csrf_token %}
+        </form>
+    </div>
+</div>
+
+{% endblock %}

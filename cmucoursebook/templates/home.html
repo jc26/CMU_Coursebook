@@ -1,0 +1,263 @@
+{% extends "base_sidebar.html" %}
+
+{% block js %}
+{% load staticfiles %}
+<script src="{% static 'js/planner/main.js' %}"></script>
+<script src="{% static 'js/planner/modernizr.js' %}"></script>
+<script src="{% static 'js/progressbar.min.js' %}"></script>
+<script src="{% static 'js/home.js' %}"></script>
+{% endblock %}
+
+{% block css %}
+{% load staticfiles %}
+<link href="{% static 'css/planner/calendar_style.css' %}" rel="stylesheet" type="text/css">
+<link href="{% static 'css/home.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block content %}
+<h1>Dashboard</h1>
+<hr>
+
+<h3 style="font-weight:normal">Your Schedule</h3>
+<div class="add-class">
+    <div class="row">
+        <div class="col-sm-5">
+            <form method="post" action="{% url 'add-courses' %}" class="form-inline">
+                <div class="input-group">
+                    <input id="cid" name="cid" type="text" class="form-control" placeholder="Enter Course ID">
+                    <span class="input-group-btn semester-select">
+                        <select class="form-control" id="semester" name="semester">
+                            <option>Current</option>
+                            <option>Past</option>
+                            <option>Future</option>
+                        </select>
+                    </span>
+                    <span class="input-group-btn">
+                        <button class="btn btn-info" type="submit">Add Class</button>
+                    </span>
+                </div>
+                {% csrf_token %}
+            </form>
+        </div>
+        <div class="col-sm-2 col-sm-offset-5">
+        <!-- if user is super user, they can upload data -->
+        {% if user.is_staff %}
+        <button type="button" class="btn btn-info btn-sm upload" data-toggle="modal" data-target="#uploadData">
+        Upload Data</button>
+        {% else %}
+        <button type="button" class="btn btn-info btn-sm upload disabled">
+        Upload Data</button>
+        <span class="buttontext">You are not a faculty &#9785;</span>
+        {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="uploadData" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Upload Data</h4>
+            </div>
+            <div class="row">
+                <div class="col-sm-10 col-sm-offset-1">
+                <h5><b>data format -- csv file </b></h5>
+                <h5>course data:
+                    <small>course id, course name, department, description, start time, end time, day</small></h5>
+                <h5>history data:
+                    <small>semester, year, instructor, department,
+                        course id, course name, section, ctype, response, enrollment,
+                        response rate, time spent per week, interest in student learning,
+                        explain course requirements, clear learning goals, instructor provides Feedback to students,
+                        importance of subject, Explains subject matter, show respect for students, overall teaching,
+                        overall course</small></h5>
+                </div>
+            </div>
+            <hr>
+            <form enctype="multipart/form-data" class="form-horizontal" method="post" action="{% url 'upload'%}">
+                <div class="modal-body">
+                    <table>
+                        {{ formfile }}
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-info">Confirm</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+                {% csrf_token %}
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="cd-schedule loading">
+    <div class="timeline">
+        <ul>
+            <li><span>09:00</span></li>
+            <li><span>09:30</span></li>
+            <li><span>10:00</span></li>
+            <li><span>10:30</span></li>
+            <li><span>11:00</span></li>
+            <li><span>11:30</span></li>
+            <li><span>12:00</span></li>
+            <li><span>12:30</span></li>
+            <li><span>13:00</span></li>
+            <li><span>13:30</span></li>
+            <li><span>14:00</span></li>
+            <li><span>14:30</span></li>
+            <li><span>15:00</span></li>
+            <li><span>15:30</span></li>
+            <li><span>16:00</span></li>
+            <li><span>16:30</span></li>
+            <li><span>17:00</span></li>
+            <li><span>17:30</span></li>
+            <li><span>18:00</span></li>
+        </ul>
+    </div>
+    <div class="events">
+        <ul>
+            <li class="events-group">
+                <div class="top-info"><span>Monday</span></div>
+                <ul>
+                    {% for course, index in monday %}
+                        <li class="single-event" data-start="{{course.start}}" data-end="{{course.end}}" data-event="event-{{index}}" value="">
+                            <form action="{% url 'delete-course' %}" method="post">
+                                <input type="hidden" name="cid" value="{{course.cid}}">
+                                <input type="hidden" name="page" value="home">
+                                <input type="hidden" name="semester" value="curr">
+                                <button type="submit" class="close" aria-label="Close" style="color:red">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                {% csrf_token %}
+                            </form>
+                            <a href="{% url 'search2' %}?cid={{course.cid}}">
+                                <em class="event-name">{{course.cid}}: {{course.name}}</em>
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </li>
+            <li class="events-group">
+                <div class="top-info"><span>Tuesday</span></div>
+                <ul>
+                    {% for course, index in tuesday %}
+                        <li class="single-event" data-start="{{course.start}}" data-end="{{course.end}}" data-event="event-{{index}}" value="">
+                            <form action="{% url 'delete-course' %}" method="post">
+                                <input type="hidden" name="cid" value="{{course.cid}}">
+                                <input type="hidden" name="page" value="home">
+                                <input type="hidden" name="semester" value="curr">
+                                <button type="submit" class="close" aria-label="Close" style="color:red">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                {% csrf_token %}
+                            </form>
+                            <a href="{% url 'search2' %}?cid={{course.cid}}">
+                                <em class="event-name">{{course.cid}}: {{course.name}}</em>
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </li>
+            <li class="events-group">
+                <div class="top-info"><span>Wednesday</span></div>
+                <ul>
+                    {% for course, index in wednesday %}
+                        <li class="single-event" data-start="{{course.start}}" data-end="{{course.end}}" data-event="event-{{index}}" value="">
+                            <form action="{% url 'delete-course' %}" method="post">
+                                <input type="hidden" name="cid" value="{{course.cid}}">
+                                <input type="hidden" name="page" value="home">
+                                <input type="hidden" name="semester" value="curr">
+                                <button type="submit" class="close" aria-label="Close" style="color:red">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                {% csrf_token %}
+                            </form>
+                            <a href="{% url 'search2' %}?cid={{course.cid}}">
+                                <em class="event-name">{{course.cid}}: {{course.name}}</em>
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </li>
+            <li class="events-group">
+            <div class="top-info"><span>Thursday</span></div>
+                <ul>
+                    {% for course, index in thursday %}
+                        <li class="single-event" data-start="{{course.start}}" data-end="{{course.end}}" data-event="event-{{index}}" value="">
+                            <form action="{% url 'delete-course' %}" method="post">
+                                <input type="hidden" name="cid" value="{{course.cid}}">
+                                <input type="hidden" name="page" value="home">
+                                <input type="hidden" name="semester" value="curr">
+                                <button type="submit" class="close" aria-label="Close" style="color:red">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                {% csrf_token %}
+                            </form>
+                            <a href="{% url 'search2' %}?cid={{course.cid}}">
+                                <em class="event-name">{{course.cid}}: {{course.name}}</em>
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </li>
+            <li class="events-group">
+                <div class="top-info"><span>Friday</span></div>
+                <ul>
+                    {% for course, index in friday %}
+                        <li class="single-event" data-start="{{course.start}}" data-end="{{course.end}}" data-event="event-{{index}}" value="">
+                            <form action="{% url 'delete-course' %}" method="post">
+                                <input type="hidden" name="cid" value="{{course.cid}}">
+                                <input type="hidden" name="page" value="home">
+                                <input type="hidden" name="semester" value="curr">
+                                <button type="submit" class="close" aria-label="Close" style="color:red">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                {% csrf_token %}
+                            </form>
+                            <a href="{% url 'search2' %}?cid={{course.cid}}">
+                                <em class="event-name">{{course.cid}}: {{course.name}}</em>
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <div class="cover-layer"></div>
+</div>
+<div id="multiline"></div>
+
+{% if courses.count == 0 %}
+    <h4 style='color: grey;'>Add some courses to see course data!</h4>
+{% else %}
+    <h3 style="font-weight:normal">Your Weekly Work Load</h3>
+    {% for course in courses %}
+        <div class="class-hours">
+            <div class="chart-title">{{course.cid}}</div>
+            <div class="chart" id="hours_{{course.cid}}"></div>
+            <script type="text/javascript">
+            drawHoursCircle('#hours_{{course.cid}}', {{course.hours}}/25);
+            </script>
+        </div>
+    {% endfor %}
+    <h3 style="font-weight:normal; clear: both;">Quality of Your Classes</h3>
+    {% for course in courses %}
+        <div class="class-hours">
+            <div class="chart-title">{{course.cid}}</div>
+            <div class="chart" id="rating_{{course.cid}}"></div>
+            <script type="text/javascript">
+            drawQualityCircle('#rating_{{course.cid}}', {{course.rating}}/5);
+            </script>
+        </div>
+    {% endfor %}
+{% endif %}
+{% endblock %}
+
+{% block pending %}
+{% if pending > 0 %}
+<span class="badge">{{pending}}</span>
+{% endif %}
+{% endblock %}

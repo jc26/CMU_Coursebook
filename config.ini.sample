@@ -1,0 +1,11 @@
+[Email]
+Host: smtp.andrew.cmu.edu
+Port: 465
+User: <AndrewID>
+Password: <Your-Password>
+
+[S3]
+Bucket: webapp-demo
+AccessKey: <AWS-Access-Key>
+SecretKey: <AWS-Secret-Access-Key>
+

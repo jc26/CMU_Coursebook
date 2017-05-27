@@ -1,0 +1,55 @@
+{% extends "login_base.html" %}
+
+{% load addcss %}
+
+{% block content %}
+
+<!-- Some code taken from http://azmind.com/bootstrap-login-register-forms-templates/ -->
+<div class="form-box">
+    <div class="form-top">
+        <div class="form-top-left">
+            <h3>Login to our site</h3>
+            <p>Enter username and password to log on:</p>
+        </div>
+        <div class="form-top-right">
+            <i class="fa fa-lock"></i>
+        </div>
+    </div>
+    <div class="form-bottom">
+        <form role="form" action="{% url 'login' %}" method="post" class="login-form">
+            <span style="color:red">{% if form.errors %} Incorrect username or password. {% endif %}</span>
+            <div class="form-group">
+                <label class="sr-only" for="form-username">{{ form.username.label_tag }}</label>
+                {{ form.username|addcss:"form-control" }}
+            </div>
+            <div class="form-group">
+                <label class="sr-only" for="form-password">{{ form.password.label_tag }}</label>
+                {{ form.password|addcss:"form-control" }}
+            </div>
+            <div class="row">
+              <div class="col-sm-6">
+                <input class="btn login" type="submit" value="Login" />
+              </div>
+              <div class="col-sm-6">
+                <a href="{% url 'register' %}" class="btn register">Register</a>
+              </div>
+            </div>
+            {% csrf_token %}
+        </form>
+    </div>
+</div>
+
+{% load staticfiles %}
+<script src="{% static 'js/login.js' %}"></script>
+{% block loader %}
+<div class="se-pre-con"></div>
+<script	src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.2/modernizr.js"></script>
+<script type="text/javascript">
+    $(window).load(function() {
+        $(".se-pre-con").delay(3000).fadeOut("slow");
+    });
+</script>
+{% endblock %}
+
+{% endblock %}

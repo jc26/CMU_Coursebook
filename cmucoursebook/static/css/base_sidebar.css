@@ -1,0 +1,86 @@
+.nav-sidebar {
+	margin-right: -15px;
+	margin-left: -20px;
+}
+
+.sidebar {
+	z-index: 1000;
+	float: left;
+	text-align: center;
+	top: 0; left: 0; bottom: 0;
+	position: fixed;
+	min-height: 100%;
+	padding-top: 4px;
+	background-color: #bb0000; /* For browsers that do not support gradients */
+	background: -webkit-linear-gradient(left top, #A10000, #F00000); /* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(bottom right, #A10000, #F00000); /* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(bottom right, #A10000, #F00000); /* For Firefox 3.6 to 15 */
+	background: linear-gradient(to bottom right, #A10000, #F00000); /* Standard syntax (must be last) */
+}
+
+#name {
+	font-family: 'Open Sans', sans-serif;
+	font-weight: 300;
+	color: white;
+	font-size: 2em;
+}
+
+.sidebar.name a:focus, a:hover {
+	 text-decoration: none;
+}
+
+/* image code adapted from http://sixrevisions.com/css/circular-images-css/ */
+.profile-img {
+	display: inline-block;
+  position: relative;
+  width: 100px;
+  height: 100px;
+  overflow: hidden;
+  border-radius: 50%;
+}
+/*--------------------------------------------------------------------------*/
+
+.nav a {
+	font-family: 'Open Sans', sans-serif;
+	color: white;
+	-ms-transition:.5s;
+	-moz-transition:.5s;
+	-webkit-transition:.5s;
+	transition:.5s;
+}
+
+.nav > li > a:hover, .nav > li > a:focus {
+  background-color: #FF1919;
+  text-decoration: none;
+}
+
+.btn-success {
+	width: 100%;
+	margin-top: -10px;
+}
+
+.logout {
+	font-family: 'Open Sans', sans-serif;
+	width: 100%;
+	background-color: transparent;
+	border-color: white;
+	-ms-transition:.5s;
+	-moz-transition:.5s;
+	-webkit-transition:.5s;
+	transition:.5s;
+}
+
+.logout:hover {
+	background-color: white;
+	border-color: white;
+	color: black;
+}
+
+h1 {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 700;
+}
+
+h3 {
+  font-family: 'Open Sans', sans-serif;
+}

@@ -1,0 +1,152 @@
+.arc text {
+  font: 10px sans-serif;
+  text-anchor: middle;
+}
+
+.arc path {
+  stroke: #fff;
+}
+
+.cd-schedule {
+	width: 100%;
+	margin-right: 30px;
+	margin-left: -30px;
+}
+
+.clear {
+	clear:both;
+}
+
+.cd-schedule .event-date {
+	font-size: 0.8em;
+	font-family: "Source Sans Pro", sans-serif;
+}
+
+.nav a {
+	width: inherit;
+}
+
+.single-event button {
+	padding-top: 5px;
+	padding-right: 10px;
+}
+
+@media only screen and (min-width: 800px) {
+	.cd-schedule .event-name {
+	    font-size: 1.3rem;
+			font-family: "Source Sans Pro", sans-serif;
+	}
+}
+
+.top-info {
+	font-family: "Source Sans Pro", sans-serif;
+}
+
+.input-group {
+	margin-bottom: -20px;
+	margin-left: 70px;
+	min-width: 20px;
+}
+
+@media only screen and (max-width: 1000px) {
+	.input-group {
+		margin-left: 10px;
+		min-width: 20px;
+	}
+}
+
+@media only screen and (max-width: 800px) {
+	.input-group {
+		margin-left: 40px;
+		min-width: 20px;
+	}
+}
+
+.class-hours {
+	position: relative;
+	width: 150px;
+	height: 150px;
+	text-align: center;
+	margin: 20px;
+	margin-bottom: 50px;
+	float: left;
+}
+
+.chart {
+  width: 150px;
+  height: 150px;
+  position: relative;
+}
+
+.progressbar-text {
+	text-align: center;
+}
+
+.chart-title {
+	padding-bottom: 10px;
+}
+
+.cd-schedule .single-event[data-event="event-1"], .cd-schedule [data-event="event-1"] .header-bg {
+  background-color: #247;
+}
+
+.cd-schedule .single-event[data-event="event-2"], .cd-schedule [data-event="event-2"] .header-bg {
+  background-color: #085;
+}
+
+.cd-schedule .single-event[data-event="event-2"]:hover, .cd-schedule [data-event="event-2"] .header-bg:hover {
+  background: #b1c4be;
+}
+
+.cd-schedule .single-event[data-event="event-3"], .cd-schedule [data-event="event-3"] .header-bg {
+  background-color: #067;
+}
+
+.cd-schedule .single-event[data-event="event-4"], .cd-schedule [data-event="event-4"] .header-bg {
+  background-color: #a60;
+}
+
+.cd-schedule .single-event[data-event="event-5"], .cd-schedule [data-event="event-5"] .header-bg {
+  background-color: #243;
+}
+
+select#semester.form-control {
+  margin-left: -4px;
+  margin-right: -2px;
+  z-index: 1;
+}
+
+.upload {
+  padding: 6px 12px 6px 12px;
+  font-size: 14px;
+  margin-top: 3px;
+  margin-left: 13%;
+}
+
+.buttontext {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    top: -5px;
+    right: 90%;
+}
+
+.buttontext::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    margin-top: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent transparent black;
+}
+.disabled:hover + .buttontext {
+    visibility: visible;
+}
